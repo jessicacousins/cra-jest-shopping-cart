@@ -1,4 +1,4 @@
-# ToDo List with Jest
+# CRA Shopping-Cart with Jest
 
 ## Description
 
