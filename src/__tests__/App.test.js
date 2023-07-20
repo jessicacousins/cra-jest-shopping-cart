@@ -1,199 +1,68 @@
-// ! winner Jest Success
-// const React = require("react");
-// const {
-//   render,
-//   screen,
-//   fireEvent,
-//   waitFor,
-// } = require("@testing-library/react");
-// import Products from "./Components/products";
-// const userEvent = require("@testing-library/user-event");
-// const products = require("./mocks/products");
+import React from "react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import Products from "../Components/products";
 
-// const axios = require("axios");
-// jest.mock("axios");
+// ? ***************** test 1 *******************************
+test("render text from shopping-cart restock button", async () => {
+  render(<Products />);
+  const restockButton = screen.getByRole("button", {
+    name: /restock products/i,
+  });
+  expect(restockButton).toBeInTheDocument();
+});
 
-// describe("Products component", () => {
-//   beforeEach(() => {
-//     render(<Products />);
-//   });
+// ? ***************** test 2 *******************************
+test("render text from submit button", async () => {
+  render(<Products />);
+  const submitButtons = screen.queryAllByText(/-Stock=/i);
+  expect(submitButtons.length).toBeGreaterThan(0);
+});
 
-//   it("should display the products", async () => {
-//     const restockButton = screen.getByText(/ReStock Products/i);
-//     fireEvent.click(restockButton);
+// ? ***************** test 3 *******************************
+test("render text from the submit button - find all which requires await", async () => {
+  render(<Products />);
+  const submitButtons = await screen.findAllByText(/-Stock=/i);
+  expect(submitButtons.length).toBeGreaterThan(0);
+});
 
-//     await waitFor(() => screen.getByRole("heading", { name: /Product List/i }));
+// ? ***************** test 4 *******************************
+test("render to see if the text meow is not in the submit buttons", async () => {
+  render(<Products />);
+  const submitButtons = screen.queryAllByText(/meow/i);
+  expect(submitButtons).toHaveLength(0);
+});
 
-//     const apples = screen.getByRole("button", { name: /apples/i });
-//     const oranges = screen.getByRole("button", { name: /oranges/i });
-//     const beans = screen.getByRole("button", { name: /beans/i });
-//     const cabbage = screen.getByRole("button", { name: /cabbage/i });
+// ? ***************** test 5 *******************************
+test("render all the elements with header - there are three", async () => {
+  render(<Products />);
+  const headingElements = screen.getAllByRole("heading");
+  expect(headingElements.length).toBe(3);
+});
 
-//     expect(apples).toBeInTheDocument();
-//     expect(oranges).toBeInTheDocument();
-//     expect(beans).toBeInTheDocument();
-//     expect(cabbage).toBeInTheDocument();
-//   });
-// });
-// import { getProducts } from "../__mocks__/axios";
+// ? ***************** test 6 *******************************
+test("should add item to cart on button click", async () => {
+  render(<Products />);
+  const productList = screen.getByRole("list");
+  const addToCartInput =
+    productList.getElementsByClassName("addToCartInput")[0];
+  const cartContents = screen.getByText(/Cart Contents/i);
+  expect(cartContents).toBeInTheDocument();
+  expect(cartContents).not.toHaveTextContent(/apples/i);
+  fireEvent.click(addToCartInput);
+  await waitFor(() => {
+    expect(cartContents).toHaveLength;
+  });
+});
 
-// let mockData = {
-//   data: [
-//     {
-//       id: 1,
-//       attributes: {
-//         name: "apples",
-//         country: "italy",
-//         cost: 3,
-//         instock: 10,
-//       },
-//     },
-//     {
-//       id: 2,
-//       attributes: {
-//         name: "oranges",
-//         country: "spain",
-//         cost: 4,
-//         instock: 3,
-//       },
-//     },
-//     {
-//       id: 3,
-//       attributes: {
-//         name: "beans",
-//         country: "usa",
-//         cost: 2,
-//         instock: 5,
-//       },
-//     },
-//     {
-//       id: 4,
-//       attributes: {
-//         name: "cabbage",
-//         country: "usa",
-//         cost: 1,
-//         instock: 8,
-//       },
-//     },
-//   ],
-// };
-
-// beforeEach(() => {
-//   let mock = jest.spyOn(global, "fetch");
-//   mock.mockImplementation(() =>
-//     Promise.resolve({
-//       json: () => Promise.resolve(mockData),
-//     })
-//   );
-// });
-
-// afterEach(() => {
-//   jest.restoreAllMocks();
-// });
-
-// test("Making call to fetch", async () => {
-//   let products = await getProducts();
-//   expect(products).toEqual({
-//     name: "apples",
-//     country: "italy",
-//     cost: 3,
-//     instock: 10,
-//   });
-// });
-
-// expect(fetch).toHaveBeenCalledTimes(1);
-// * * * * * * * * * * * * * * * * * *
-// * * * * * * * * * * * * * * * * * *
-// * * * * * * * * * * * * * * * * * *
-// * new code to work with
-import { getProducts } from "../__mocks__/axios";
-import { render } from "@testing-library/react";
-
-jest.mock("axios", () => ({
-  get: jest.fn(() =>
-    Promise.resolve({
-      data: {
-        data: [
-          {
-            id: 1,
-            attributes: {
-              name: "apples",
-              country: "italy",
-              cost: 3,
-              instock: 10,
-            },
-          },
-          {
-            id: 2,
-            attributes: {
-              name: "oranges",
-              country: "spain",
-              cost: 4,
-              instock: 3,
-            },
-          },
-          {
-            id: 3,
-            attributes: {
-              name: "beans",
-              country: "usa",
-              cost: 2,
-              instock: 5,
-            },
-          },
-          {
-            id: 4,
-            attributes: {
-              name: "cabbage",
-              country: "usa",
-              cost: 1,
-              instock: 8,
-            },
-          },
-        ],
-      },
-    })
-  ),
-}));
-
-test("Making call to fetch", async () => {
-  let products = await getProducts();
-  expect(products).toEqual([
-    {
-      id: 1,
-      attributes: {
-        name: "apples",
-        country: "italy",
-        cost: 3,
-        instock: 10,
-      },
-    },
-    {
-      id: 2,
-      attributes: {
-        name: "oranges",
-        country: "spain",
-        cost: 4,
-        instock: 3,
-      },
-    },
-    {
-      id: 3,
-      attributes: {
-        name: "beans",
-        country: "usa",
-        cost: 2,
-        instock: 5,
-      },
-    },
-    {
-      id: 4,
-      attributes: {
-        name: "cabbage",
-        country: "usa",
-        cost: 1,
-        instock: 8,
-      },
-    },
-  ]);
+// ? ***************** test 7 *******************************
+test("fireEvent test that the buttons are working as expected and that clicking them adds the corresponding items to the cart", () => {
+  render(<Products />);
+  const addToCartButtons = screen.queryAllByText(/^ \+/);
+  addToCartButtons.forEach((button) => fireEvent.click(button));
+  const cartItemHeaders = screen.queryAllByRole("button", {
+    name: /^apples$|^oranges$|^beans$|^cabbage$/i,
+  });
+  cartItemHeaders.forEach((header) => {
+    expect(header).toBeInTheDocument();
+  });
 });

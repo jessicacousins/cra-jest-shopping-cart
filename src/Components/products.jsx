@@ -139,10 +139,17 @@ const Products = (props) => {
     return (
       <li key={index}>
         <Image src={uhit} width={70} roundedCircle />
-        <Button variant="primary" size="large">
+        <Card variant="primary" className="product-card">
           {item.name}:${item.cost}-Stock={item.instock}
+        </Card>
+        <Button
+          className="addToCartInput"
+          name={item.name}
+          type="submit"
+          onClick={addToCart}
+        >
+          + {item.name}
         </Button>
-        <input name={item.name} type="submit" onClick={addToCart} />
       </li>
     );
   });
@@ -216,15 +223,15 @@ const Products = (props) => {
     <Container>
       <Row>
         <Col>
-          <h1>Product List</h1>
+          <h1 className="header">Product List</h1>
           <ul style={{ listStyleType: "none" }}>{list}</ul>
         </Col>
         <Col>
-          <h1>Cart Contents</h1>
+          <h1 className="header">Cart Contents</h1>
           <Accordion defaultActiveKey="0">{cartList}</Accordion>
         </Col>
         <Col>
-          <h1>CheckOut</h1>
+          <h1 className="header">CheckOut</h1>
           <Button onClick={checkOut}>CheckOut $ {finalList().total}</Button>
           <div> {finalList().total > 0 && finalList().final} </div>
         </Col>
